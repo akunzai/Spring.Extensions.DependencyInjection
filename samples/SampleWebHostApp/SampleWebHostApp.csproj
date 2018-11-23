@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Spring.Extensions.DependencyInjection\Spring.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\SampleShared\SampleShared.csproj" />
+  </ItemGroup>
+
+</Project>
