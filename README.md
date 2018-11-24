@@ -33,9 +33,10 @@ using Spring.Extensions.DependencyInjection;
     {
         var factory = new SpringServiceProviderFactory(options =>
         {
-            var parent = new CodeConfigApplicationContext();
-            parent.ScanAllAssemblies();
-            parent.Refresh();
+            var context = new CodeConfigApplicationContext();
+            context.ScanAllAssemblies();
+            context.Refresh();
+            options.Parent = context;
         });
         // or
         //var factory = new SpringServiceProviderFactory(ContextRegistry.GetContext());
