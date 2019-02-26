@@ -6,6 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spring.Extensions.DependencyInjection", "src\Spring.Extensions.DependencyInjection\Spring.Extensions.DependencyInjection.csproj", "{5E909F19-E729-4AD7-A3A6-DC555EB4A488}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{873C60EF-F515-4735-96F8-7B7784D93130}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+		src\Directory.Build.targets = src\Directory.Build.targets
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9FB328A8-ECB2-4F2E-9C3F-7E65F4A05DA8}"
 EndProject
