@@ -1,0 +1,9 @@
+version: '{build}'
+image: Visual Studio 2017
+build_script:
+- ps: dotnet build -c Release
+test_script:
+- ps: dotnet test
+artifacts:
+- path: '**\Release\*.nupkg'
+  name: Nuget
