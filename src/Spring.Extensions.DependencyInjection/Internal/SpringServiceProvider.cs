@@ -24,7 +24,7 @@ namespace Spring.Extensions.DependencyInjection.Internal
 
         public object GetService(Type serviceType)
         {
-            return LooupService(_context, serviceType);
+            return LookupService(_context, serviceType);
         }
 
         public object GetRequiredService(Type serviceType)
@@ -33,7 +33,7 @@ namespace Spring.Extensions.DependencyInjection.Internal
             {
                 ThrowRequiredServiceTypeNotFoundException(serviceType);
             }
-            var requiredService = LooupService(_context, serviceType);
+            var requiredService = LookupService(_context, serviceType);
             if (requiredService == null)
             {
                 _nonResolvableTypes.Add(serviceType);
@@ -125,12 +125,12 @@ namespace Spring.Extensions.DependencyInjection.Internal
             return null;
         }
 
-        private object LooupService(IApplicationContext context, Type serviceType)
+        private object LookupService(IApplicationContext context, Type serviceType)
         {
             var service = GetServiceIntetnal(context, serviceType);
             if (service == null && context.ParentContext != null)
             {
-                return LooupService(context.ParentContext, serviceType);
+                return LookupService(context.ParentContext, serviceType);
             }
             return service;
         }
