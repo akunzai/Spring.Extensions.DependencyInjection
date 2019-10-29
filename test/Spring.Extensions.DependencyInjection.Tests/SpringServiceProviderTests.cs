@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Spring.Extensions.DependencyInjection.Tests.Fakes;
@@ -198,7 +198,7 @@ namespace Spring.Extensions.DependencyInjection.Tests
 
             // Assert
             Assert.NotNull(outerservice);
-            Assert.Same(fakeService,outerservice.SingleService);
+            Assert.Same(fakeService, outerservice.SingleService);
         }
 
         [Fact]
@@ -380,6 +380,42 @@ namespace Spring.Extensions.DependencyInjection.Tests
 
             // Assert
             Assert.Empty(services);
+        }
+
+        [Fact]
+        public void OnlyPerfectTypeMatchedServiceCanBeResolved()
+        {
+            // Arrange
+            var factory = new SpringServiceProviderFactory();
+            var collection = new TestServiceCollection();
+            collection.AddTransient<IFakeService, FakeService>();
+            collection.AddTransient<FakeService, FakeService>();
+            var provider = factory.CreateServiceProvider(factory.CreateBuilder(collection));
+
+            // Act
+            var service1 = provider.GetService<IFakeService>();
+            var service2 = provider.GetService<IFakeEveryService>();
+
+            // Assert
+            Assert.NotNull(service1);
+            Assert.Null(service2);
+        }
+
+        [Fact]
+        public void OnlyPerfectTypeMatchedServiceCanBeIEnumerableResolved()
+        {
+            // Arrange
+            var factory = new SpringServiceProviderFactory();
+            var collection = new TestServiceCollection();
+            collection.AddTransient<IFakeService, FakeService>();
+            collection.AddTransient<FakeService, FakeService>();
+            var provider = factory.CreateServiceProvider(factory.CreateBuilder(collection));
+
+            // Act
+            var services = provider.GetService<IEnumerable<IFakeService>>();
+
+            // Assert
+            Assert.Single(services);
         }
     }
 }

@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Spring.Context;
 using Spring.Core.TypeConversion;
 using Spring.Objects.Factory;
+using Spring.Objects.Factory.Support;
 
 namespace Spring.Extensions.DependencyInjection.Internal
 {
@@ -71,41 +73,29 @@ namespace Spring.Extensions.DependencyInjection.Internal
             {
                 return this;
             }
-            // TODO: the same service type in CodeConfigApplicationContext or XmlApplicationContext was preferred for SpringServiceProvider in SpringServiceScope
             var objectNames = context.GetObjectNamesForType(serviceType);
             if (objectNames.Count > 0)
             {
-                if (objectNames.Count == 1)
+                var perfectMatchedObjectNames = GetPerfectTypeMatchedObjectNames(context, serviceType, objectNames);
+                if (perfectMatchedObjectNames.Any())
                 {
-                    return context.GetObject(objectNames[0]);
+                    return context.GetObject(perfectMatchedObjectNames.Last());
                 }
-                // perfect type matched object is preferred
-                var factory = ((IConfigurableApplicationContext)context).ObjectFactory;
-                var perfectMatchedObjectName = new List<string>();
-                foreach (var objectName in objectNames)
-                {
-                    var definition = factory.GetObjectDefinition(objectName);
-                    if (definition != null && definition.ObjectType == serviceType)
-                    {
-                        perfectMatchedObjectName.Add(objectName);
-                    }
-                    var singleton = factory.GetSingleton(objectName);
-                    if (singleton != null && singleton is IFactoryObject factoryObject && factoryObject.ObjectType == serviceType)
-                    {
-                        perfectMatchedObjectName.Add(objectName);
-                    }
-                }
-                return context.GetObject(perfectMatchedObjectName.Count > 0 ? perfectMatchedObjectName.Last() : objectNames[objectNames.Count -1]);
             }
 
             // if service type is IEnumerable<T>
             var elementType = serviceType.GetEnumerableElementType();
             if (elementType != null)
             {
-                var enumerableServices = context.GetObjectsOfType(elementType);
-                if (enumerableServices.Values.Count > 0 || context.ParentContext == null)
+                var perfectMatchedEnumerableObjectNames = GetPerfectTypeMatchedObjectNames(context, elementType);
+                if (perfectMatchedEnumerableObjectNames.Any() || context.ParentContext == null)
                 {
-                    return TypeConversionUtils.ConvertValueIfNecessary(serviceType, enumerableServices.Values, null);
+                    var enumerableServices = new List<object>(perfectMatchedEnumerableObjectNames.Count());
+                    foreach (var objectName in perfectMatchedEnumerableObjectNames)
+                    {
+                        enumerableServices.Add(context.GetObject(objectName));
+                    }
+                    return TypeConversionUtils.ConvertValueIfNecessary(serviceType, enumerableServices, null);
                 }
             }
 
@@ -133,6 +123,42 @@ namespace Spring.Extensions.DependencyInjection.Internal
                 return LookupService(context.ParentContext, serviceType);
             }
             return service;
+        }
+
+        private IEnumerable<string> GetPerfectTypeMatchedObjectNames(IApplicationContext context, Type serviceType, IList<string> objectNames = null)
+        {
+            objectNames = objectNames ?? context.GetObjectNamesForType(serviceType);
+            var factory = ((IConfigurableApplicationContext)context).ObjectFactory;
+            foreach (var objectName in objectNames)
+            {
+                var definition = factory.GetObjectDefinition(objectName);
+                if (definition != null
+                    && definition is AbstractObjectDefinition aod)
+                {
+                    if (aod.HasObjectType && aod.ObjectType == serviceType)
+                    {
+                        yield return objectName;
+                    }
+                    if (!aod.HasObjectType && !string.IsNullOrEmpty(aod.FactoryObjectName) && !string.IsNullOrEmpty(aod.FactoryMethodName))
+                    {
+                        var fod = factory.GetObjectDefinition(aod.FactoryObjectName);
+                        if (fod != null)
+                        {
+                            var typeInfo = fod.ObjectType.GetTypeInfo();
+                            var method = typeInfo.GetDeclaredMethod(aod.FactoryMethodName);
+                            if (method != null && method.ReturnType == serviceType)
+                            {
+                                yield return objectName;
+                            }
+                        }
+                    }
+                }
+                var singleton = factory.GetSingleton(objectName);
+                if (singleton != null && singleton is IFactoryObject factoryObject && factoryObject.ObjectType == serviceType)
+                {
+                    yield return objectName;
+                }
+            }
         }
     }
 }
