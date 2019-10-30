@@ -125,9 +125,9 @@ namespace Spring.Extensions.DependencyInjection.Internal
             return service;
         }
 
-        private IEnumerable<string> GetPerfectTypeMatchedObjectNames(IApplicationContext context, Type serviceType, IList<string> objectNames = null)
+        private static IEnumerable<string> GetPerfectTypeMatchedObjectNames(IApplicationContext context, Type serviceType, IList<string> objectNames = null)
         {
-            objectNames = objectNames ?? context.GetObjectNamesForType(serviceType);
+            objectNames ??= context.GetObjectNamesForType(serviceType);
             var factory = ((IConfigurableApplicationContext)context).ObjectFactory;
             foreach (var objectName in objectNames)
             {

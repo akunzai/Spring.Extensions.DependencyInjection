@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Spring.Context;
 using Spring.Context.Support;
@@ -14,12 +14,10 @@ namespace Spring.Extensions.DependencyInjection
 
         public SpringServiceProviderFactory() : this(SpringServiceProviderOptions.Default)
         {
-
         }
 
         public SpringServiceProviderFactory(IApplicationContext parent) : this(new SpringServiceProviderOptions { Parent = parent })
         {
-
         }
 
         public SpringServiceProviderFactory(SpringServiceProviderOptions options)
@@ -30,40 +28,43 @@ namespace Spring.Extensions.DependencyInjection
         public SpringServiceProviderFactory(Action<SpringServiceProviderOptions> configureDelegate)
         {
             _options = new SpringServiceProviderOptions();
-            configureDelegate(_options);
+            configureDelegate?.Invoke(_options);
         }
 
         public IApplicationContext CreateBuilder(IServiceCollection services)
         {
             var context = new GenericApplicationContext(ApplicationContextName, true, _options.Parent);
 
-            foreach (var service in services)
+            if (services != null)
             {
-                if (service.ImplementationType != null)
+                foreach (var service in services)
                 {
-                    if (service.ServiceType.IsGenericTypeDefinition && service.ImplementationType.IsGenericTypeDefinition)
+                    if (service.ImplementationType != null)
                     {
-                        // HACK: we leave a clue here to make SpringServiceProvider can binding generic type
-                        context.RegisterSingleton(service.ImplementationType, GenericTypePrefix + service.ServiceType.AssemblyQualifiedName);
-                        continue;
+                        if (service.ServiceType.IsGenericTypeDefinition && service.ImplementationType.IsGenericTypeDefinition)
+                        {
+                            // HACK: we leave a clue here to make SpringServiceProvider can binding generic type
+                            context.RegisterSingleton(service.ImplementationType, GenericTypePrefix + service.ServiceType.AssemblyQualifiedName);
+                            continue;
+                        }
+                        context.Register(service.ServiceType, () =>
+                        {
+                            var provider = context.GetOrCreateServiceProvider();
+                            return _options.InstanceActivator(provider, service.ImplementationType);
+                        }, isSingleton: service.Lifetime != ServiceLifetime.Transient);
                     }
-                    context.Register(service.ServiceType, () =>
+                    else if (service.ImplementationFactory != null)
                     {
-                        var provider = context.GetOrCreateServiceProvider();
-                        return _options.InstanceActivator(provider, service.ImplementationType);
-                    }, isSingleton: service.Lifetime != ServiceLifetime.Transient);
-                }
-                else if (service.ImplementationFactory != null)
-                {
-                    context.Register(service.ServiceType, () =>
+                        context.Register(service.ServiceType, () =>
+                        {
+                            var provider = context.GetOrCreateServiceProvider();
+                            return service.ImplementationFactory(provider);
+                        }, isSingleton: service.Lifetime != ServiceLifetime.Transient);
+                    }
+                    else
                     {
-                        var provider = context.GetOrCreateServiceProvider();
-                        return service.ImplementationFactory(provider);
-                    }, isSingleton: service.Lifetime != ServiceLifetime.Transient);
-                }
-                else
-                {
-                    context.RegisterSingleton(service.ServiceType, service.ImplementationInstance);
+                        context.RegisterSingleton(service.ServiceType, service.ImplementationInstance);
+                    }
                 }
             }
 

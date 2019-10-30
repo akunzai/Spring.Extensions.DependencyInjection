@@ -110,16 +110,14 @@ namespace Spring.Extensions.DependencyInjection.Tests
             // Act
             var service1 = provider.GetService<IFakeService>();
 
-            using (var scope = provider.CreateScope())
-            {
-                var scopedService1 = scope.ServiceProvider.GetService<IFakeService>();
-                var scopedService2 = scope.ServiceProvider.GetService<IFakeService>();
+            using var scope = provider.CreateScope();
+            var scopedService1 = scope.ServiceProvider.GetService<IFakeService>();
+            var scopedService2 = scope.ServiceProvider.GetService<IFakeService>();
 
-                // Assert
-                Assert.NotSame(service1, scopedService1);
-                Assert.NotSame(service1, scopedService2);
-                Assert.NotSame(scopedService1, scopedService2);
-            }
+            // Assert
+            Assert.NotSame(service1, scopedService1);
+            Assert.NotSame(service1, scopedService2);
+            Assert.NotSame(scopedService1, scopedService2);
         }
 
         [Fact]
