@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -6,7 +6,7 @@ using SampleShared;
 using Spring.Context.Support;
 using Spring.Extensions.DependencyInjection;
 
-namespace SampleSpringApp
+namespace SampleGenericHostApp
 {
     public static class Program
     {
@@ -23,17 +23,17 @@ namespace SampleSpringApp
             .ConfigureServices(services =>
             {
                 services.AddLogging(logging => logging.AddConsole());
-                services.AddTransient<IDateTimeProvider>(_ => new DummyDateTimeProvider
+                var dummyClock = Environment.GetEnvironmentVariable("SYSTEM_CLOCK");
+                if (!string.IsNullOrWhiteSpace(dummyClock) && DateTime.TryParse(dummyClock, out var dummyDateTime))
                 {
-                    DateTime = DateTime.Now
-                });
-                services.AddTransient<ICommand, LoggerOutputDateTimeCommand>();
+                    services.AddSingleton<ISystemClock>(_ => new DummySystemClock(dummyDateTime));
+                }
             });
 
             using (var host = hostBuilder.Build())
             {
-                var command = host.Services.GetRequiredService<ICommand>();
-                command.Execute();
+                var clock = host.Services.GetRequiredService<ISystemClock>();
+                Console.WriteLine($"Current DateTime is {clock.Now:O}");
             }
 
             Console.WriteLine("Press any key to exit ...");

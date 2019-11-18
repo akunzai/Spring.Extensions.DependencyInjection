@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +7,7 @@ using SampleShared;
 using Spring.Context.Support;
 using Spring.Extensions.DependencyInjection;
 
-namespace SampleWebApp
+namespace SampleWebHostApp
 {
     public class Startup
     {
@@ -20,6 +20,11 @@ namespace SampleWebApp
                 context.Refresh();
                 options.Parent = context;
             });
+            var dummyClock = Environment.GetEnvironmentVariable("SYSTEM_CLOCK");
+            if (!string.IsNullOrWhiteSpace(dummyClock) && DateTime.TryParse(dummyClock, out var dummyDateTime))
+            {
+                services.AddSingleton<ISystemClock>(_ => new DummySystemClock(dummyDateTime));
+            }
             var containerBuilder = factory.CreateBuilder(services);
             return factory.CreateServiceProvider(containerBuilder);
         }
@@ -34,11 +39,10 @@ namespace SampleWebApp
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.Run(async (context) =>
+            app.Run(async context =>
             {
-                await context.Response.WriteAsync($"Hello World from {provider.GetType().Name} !").ConfigureAwait(false);
-                var command = provider.GetRequiredService<ICommand>();
-                command.Execute();
+                var clock = provider.GetRequiredService<ISystemClock>();
+                await context.Response.WriteAsync($"Current DateTime is {clock.Now:O}").ConfigureAwait(false);
             });
         }
     }

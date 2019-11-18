@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SampleShared;
@@ -19,22 +19,22 @@ namespace SampleApp
 
             using (provider as IDisposable)
             {
-                var command = provider.GetRequiredService<ICommand>();
-                command.Execute();
+                var clock = provider.GetRequiredService<ISystemClock>();
+                Console.WriteLine($"Current DateTime is {clock.Now:O}");
             }
 
             Console.WriteLine("Press any key to exit ...");
             Console.ReadKey();
         }
 
-        private static void ConfigureServices(ServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging(logging => logging.AddConsole());
-            services.AddTransient<IDateTimeProvider>(_ => new DummyDateTimeProvider
+            var dummyClock = Environment.GetEnvironmentVariable("SYSTEM_CLOCK");
+            if (!string.IsNullOrWhiteSpace(dummyClock) && DateTime.TryParse(dummyClock, out var dummyDateTime))
             {
-                DateTime = DateTime.Now
-            });
-            services.AddTransient<ICommand, LoggerOutputDateTimeCommand>();
+                services.AddSingleton<ISystemClock>(_ => new DummySystemClock(dummyDateTime));
+            }
         }
     }
 }
