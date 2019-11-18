@@ -1,6 +1,6 @@
 # Spring.Extensions.DependencyInjection
 
-integrate [Spring.NET](https://github.com/spring-projects/spring-net) with [Microsoft.Extensions.DependencyInjection](https://github.com/aspnet/DependencyInjection)
+integrate [Spring.NET](https://github.com/spring-projects/spring-net) with [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection)
 
 [![NuGet version](https://img.shields.io/nuget/v/Spring.Extensions.DependencyInjection.svg?style=flat-square)](https://www.nuget.org/packages/Spring.Extensions.DependencyInjection/)
 [![Build status](https://ci.appveyor.com/api/projects/status/cne5xd6c9dbmbxtr?svg=true)](https://ci.appveyor.com/project/akunzai/spring-extensions-dependencyinjection)
