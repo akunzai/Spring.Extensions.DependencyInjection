@@ -81,7 +81,7 @@ using Spring.Extensions.DependencyInjection;
         ConfigureServices(services);
         var context = factory.CreateBuilder(services);
         var provider = factory.CreateServiceProvider(context);
-    	// or directly building serviceProvider from exists ApplicationContext without integrae ServiceCollection
+        // or directly building serviceProvider from exists ApplicationContext without integrate ServiceCollection
         //var provider = factory.CreateServiceProvider(ContextRegistry.GetContext());
     }
 ...
