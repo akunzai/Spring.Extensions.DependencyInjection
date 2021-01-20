@@ -1,9 +1,16 @@
 # Spring.Extensions.DependencyInjection
 
-integrate [Spring.NET](https://github.com/spring-projects/spring-net) with [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection)
+[![Build Status][ci-badge]][ci] [![Code Coverage][codecov-badge]][codecov]
+[![NuGet version][nuget-badge]][nuget]
 
-[![NuGet version](https://img.shields.io/nuget/v/Spring.Extensions.DependencyInjection.svg?style=flat-square)](https://www.nuget.org/packages/Spring.Extensions.DependencyInjection/)
-[![Build status](https://ci.appveyor.com/api/projects/status/cne5xd6c9dbmbxtr?svg=true)](https://ci.appveyor.com/project/akunzai/spring-extensions-dependencyinjection)
+[ci]: https://github.com/akunzai/Spring.Extensions.DependencyInjection/actions?query=workflow%3ACI
+[ci-badge]: https://github.com/akunzai/Spring.Extensions.DependencyInjection/workflows/CI/badge.svg
+[codecov]: https://codecov.io/gh/akunzai/Spring.Extensions.DependencyInjection
+[codecov-badge]: https://codecov.io/gh/akunzai/Spring.Extensions.DependencyInjection/branch/main/graph/badge.svg?token=KA1W0L496Y
+[nuget]: https://www.nuget.org/packages/Spring.Extensions.DependencyInjection/
+[nuget-badge]: https://img.shields.io/nuget/v/Spring.Extensions.DependencyInjection.svg?style=flat-square
+
+Integrate [Spring.NET](https://github.com/spring-projects/spring-net) with [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection)
 
 ## Installation
 
