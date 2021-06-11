@@ -67,7 +67,7 @@ namespace Spring.Extensions.DependencyInjection.Internal
             throw new InvalidOperationException($"could not find service from Spring container with type: {serviceType}");
         }
 
-        private object GetServiceIntetnal(IApplicationContext context, Type serviceType)
+        private object GetServiceInternal(IApplicationContext context, Type serviceType)
         {
             if (serviceType == typeof(IServiceProvider))
             {
@@ -117,7 +117,7 @@ namespace Spring.Extensions.DependencyInjection.Internal
 
         private object LookupService(IApplicationContext context, Type serviceType)
         {
-            var service = GetServiceIntetnal(context, serviceType);
+            var service = GetServiceInternal(context, serviceType);
             if (service == null && context.ParentContext != null)
             {
                 return LookupService(context.ParentContext, serviceType);
