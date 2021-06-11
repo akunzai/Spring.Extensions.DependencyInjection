@@ -2,21 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
-## 2019-10-29
+## 2.1.0 (2021-06-12)
 
-### Spring.Extensions.DependencyInjection 2.0.0
+- Bump Microsoft.Extensions.DependencyInjection.Abstractions from 2.0.0 to 2.2.0
+- Bump System.Configuration.ConfigurationManager from 4.5.0 to 4.7.0
+
+## 2.0.0 (2019-10-29)
 
 - Perfect type matched service is preferred
 - Remove net461 target
 
-## 2019-02-26
-
-### Spring.Extensions.DependencyInjection 1.1.0
+## 1.1.0 (2019-02-26)
 
 - Signing assembly with Strong Name
 
-## 2018-11-24
-
-### Spring.Extensions.DependencyInjection 1.0.0
+## 1.0.0 (2018-11-24)
 
 - Initial Release
