@@ -77,9 +77,10 @@ namespace Spring.Extensions.DependencyInjection.Internal
             if (objectNames.Count > 0)
             {
                 var perfectMatchedObjectNames = GetPerfectTypeMatchedObjectNames(context, serviceType, objectNames);
-                if (perfectMatchedObjectNames.Any())
+                var matchedObjectNames = perfectMatchedObjectNames.ToList();
+                if (matchedObjectNames.Any())
                 {
-                    return context.GetObject(perfectMatchedObjectNames.Last());
+                    return context.GetObject(matchedObjectNames.Last());
                 }
             }
 
@@ -88,10 +89,11 @@ namespace Spring.Extensions.DependencyInjection.Internal
             if (elementType != null)
             {
                 var perfectMatchedEnumerableObjectNames = GetPerfectTypeMatchedObjectNames(context, elementType);
-                if (perfectMatchedEnumerableObjectNames.Any() || context.ParentContext == null)
+                var matchedEnumerableObjectNames = perfectMatchedEnumerableObjectNames.ToList();
+                if (matchedEnumerableObjectNames.Any() || context.ParentContext == null)
                 {
-                    var enumerableServices = new List<object>(perfectMatchedEnumerableObjectNames.Count());
-                    foreach (var objectName in perfectMatchedEnumerableObjectNames)
+                    var enumerableServices = new List<object>(matchedEnumerableObjectNames.Count);
+                    foreach (var objectName in matchedEnumerableObjectNames)
                     {
                         enumerableServices.Add(context.GetObject(objectName));
                     }
@@ -132,8 +134,7 @@ namespace Spring.Extensions.DependencyInjection.Internal
             foreach (var objectName in objectNames)
             {
                 var definition = factory.GetObjectDefinition(objectName);
-                if (definition != null
-                    && definition is AbstractObjectDefinition aod)
+                if (definition is AbstractObjectDefinition aod)
                 {
                     if (aod.HasObjectType && aod.ObjectType == serviceType)
                     {
@@ -154,7 +155,7 @@ namespace Spring.Extensions.DependencyInjection.Internal
                     }
                 }
                 var singleton = factory.GetSingleton(objectName);
-                if (singleton != null && singleton is IFactoryObject factoryObject && factoryObject.ObjectType == serviceType)
+                if (singleton is IFactoryObject factoryObject && factoryObject.ObjectType == serviceType)
                 {
                     yield return objectName;
                 }
