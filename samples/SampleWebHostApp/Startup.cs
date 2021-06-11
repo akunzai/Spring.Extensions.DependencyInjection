@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SampleShared;
 using Spring.Context.Support;
@@ -11,29 +12,34 @@ namespace SampleWebHostApp
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+        
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             var factory = new SpringServiceProviderFactory(options =>
             {
                 var context = new CodeConfigApplicationContext();
-                context.ScanAllAssemblies();
+                context.ScanWithTypeFilter(t => t.Name.EndsWith("SpringConfiguration"));
                 context.Refresh();
                 options.Parent = context;
             });
-            var dummyClock = Environment.GetEnvironmentVariable("SYSTEM_CLOCK");
-            if (!string.IsNullOrWhiteSpace(dummyClock) && DateTime.TryParse(dummyClock, out var dummyDateTime))
+            if (Configuration["SystemClock"]?.Equals("Dummy", StringComparison.OrdinalIgnoreCase) == true)
             {
-                services.AddSingleton<ISystemClock>(_ => new DummySystemClock(dummyDateTime));
+                services.AddSingleton<ISystemClock, DummySystemClock>();
             }
-            var containerBuilder = factory.CreateBuilder(services);
-            return factory.CreateServiceProvider(containerBuilder);
+            return factory.CreateServiceProvider(factory.CreateBuilder(services));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
             IHostingEnvironment env,
-            IServiceProvider provider)
+            IServiceProvider services)
         {
             if (env.IsDevelopment())
             {
@@ -41,7 +47,7 @@ namespace SampleWebHostApp
             }
             app.Run(async context =>
             {
-                var clock = provider.GetRequiredService<ISystemClock>();
+                var clock = services.GetRequiredService<ISystemClock>();
                 await context.Response.WriteAsync($"Current DateTime is {clock.Now:O}").ConfigureAwait(false);
             });
         }

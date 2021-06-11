@@ -39,7 +39,7 @@ namespace Spring.Extensions.DependencyInjection.Internal
             return context.RegisterSingleton(typeof(T), implementationInstance, name);
         }
 
-        internal static string BuildObjectName(this IApplicationContext context, Type serviceType, string name, object implementationInstance = null)
+        private static string BuildObjectName(this IApplicationContext context, Type serviceType, string name, object implementationInstance = null)
         {
             if (serviceType != null && typeof(IFactoryObject).IsAssignableFrom(serviceType) && implementationInstance is IFactoryObject factoryObject)
             {
@@ -47,7 +47,7 @@ namespace Spring.Extensions.DependencyInjection.Internal
             }
             return !string.IsNullOrWhiteSpace(name) && !context.ContainsObject(name)
                     ? name
-                    : !context.ContainsObject(serviceType.FullName)
+                    : serviceType != null && !context.ContainsObject(serviceType.FullName)
                         ? serviceType.FullName
                         : Guid.NewGuid().ToString();
         }

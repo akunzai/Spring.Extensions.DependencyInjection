@@ -1,6 +1,7 @@
 using System;
+using System.Runtime.InteropServices;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SampleShared;
 using Spring.Context.Support;
 using Spring.Extensions.DependencyInjection;
@@ -11,29 +12,39 @@ namespace SampleApp
     {
         public static void Main()
         {
-            var factory = new SpringServiceProviderFactory(ContextRegistry.GetContext());
+            var factory = new SpringServiceProviderFactory(options =>
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    options.Parent = ContextRegistry.GetContext();
+                }
+                else
+                {
+                    // Mono doesn't read app.config
+                    var context = new CodeConfigApplicationContext();
+                    context.ScanWithTypeFilter(t => t.Name.EndsWith("SpringConfiguration"));
+                    context.Refresh();
+                    options.Parent = context;
+                }
+            });
             var services = new ServiceCollection();
             ConfigureServices(services);
-            var context = factory.CreateBuilder(services);
-            var provider = factory.CreateServiceProvider(context);
-
-            using (provider as IDisposable)
-            {
-                var clock = provider.GetRequiredService<ISystemClock>();
-                Console.WriteLine($"Current DateTime is {clock.Now:O}");
-            }
-
-            Console.WriteLine("Press any key to exit ...");
-            Console.ReadKey();
+            var resolver = factory.CreateServiceProvider(factory.CreateBuilder(services));
+            var clock = resolver.GetRequiredService<ISystemClock>();
+            Console.WriteLine($"Current DateTime is {clock.Now:O}");
         }
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(logging => logging.AddConsole());
-            var dummyClock = Environment.GetEnvironmentVariable("SYSTEM_CLOCK");
-            if (!string.IsNullOrWhiteSpace(dummyClock) && DateTime.TryParse(dummyClock, out var dummyDateTime))
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production"}.json",
+                    optional: true)
+                .Build();
+            services.AddSingleton<IConfiguration>(configuration);
+            if (configuration["SystemClock"]?.Equals("Dummy", StringComparison.OrdinalIgnoreCase) == true)
             {
-                services.AddSingleton<ISystemClock>(_ => new DummySystemClock(dummyDateTime));
+                services.AddSingleton<ISystemClock, DummySystemClock>();
             }
         }
     }
