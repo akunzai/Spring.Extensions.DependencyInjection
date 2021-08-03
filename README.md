@@ -22,11 +22,6 @@ Install-Package Spring.Extensions.DependencyInjection
 dotnet add package Spring.Extensions.DependencyInjection
 ```
 
-## Known issues
-
-- currently, Spring.NET 2.0 still required full .NET Framework, but [Spring.NET 3.0 will support .NET Core 2.0](https://github.com/spring-projects/spring-net/issues/133)
-- the same service type in CodeConfigApplicationContext or XmlApplicationContext was preferred for SpringServiceProvider in SpringServiceScope
-
 ## Getting Started
 
 building ServiceProviderFactory from exists ApplicationContext
@@ -95,3 +90,7 @@ using Spring.Extensions.DependencyInjection;
 ```
 
 finally, you can integrate `Spring.NET` application with `Microsoft.Extensions.DependencyInjection`.
+
+## Known issues
+
+- the same service type in CodeConfigApplicationContext or XmlApplicationContext was preferred for SpringServiceProvider in SpringServiceScope

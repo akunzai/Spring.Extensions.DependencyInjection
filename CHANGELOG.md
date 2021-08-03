@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 3.0.0 (2021-08-03)
+
+- Bump Spring.Core from 2.0.1 to 3.0.0
+
 ## 2.1.0 (2021-06-12)
 
 - Bump Microsoft.Extensions.DependencyInjection.Abstractions from 2.0.0 to 2.2.0
