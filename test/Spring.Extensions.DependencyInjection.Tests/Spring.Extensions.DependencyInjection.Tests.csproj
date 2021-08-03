@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFrameworks>net5.0;netcoreapp3.1;net472</TargetFrameworks>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -17,7 +17,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" PrivateAssets="All" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(OS)' != 'Windows_NT' ">
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) AND '$(OS)' != 'Windows_NT' ">
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.10.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
   </ItemGroup>
