@@ -24,28 +24,44 @@ dotnet add package Spring.Extensions.DependencyInjection
 
 ## Getting Started
 
+integrate with Microsoft.Extensions.Hosting
+
+```csharp
+var host = Host.CreateDefaultBuilder()
+.UseServiceProviderFactory(new SpringServiceProviderFactory())
+.ConfigureServices((context, services) =>
+{
+    // ...
+}).Build();
+```
+
+integrate with ASP.NET Core Minimal APIs
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseServiceProviderFactory(new SpringServiceProviderFactory());
+```
+
 building ServiceProviderFactory from exists ApplicationContext
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
 using Spring.Context.Support;
 using Spring.Extensions.DependencyInjection;
-...
-    public static void Main()
-    {
-        var factory = new SpringServiceProviderFactory(options =>
-        {
-            var context = new CodeConfigApplicationContext();
-            context.ScanAllAssemblies();
-            context.Refresh();
-            options.Parent = context;
-        });
-        // or
-        //var factory = new SpringServiceProviderFactory(ContextRegistry.GetContext());
-        // or
-        //var factory = new SpringServiceProviderFactory(new XmlApplicationContext("objects.xml"));
-    }
-...
+// ...
+var factory = new SpringServiceProviderFactory(options =>
+{
+    var context = new CodeConfigApplicationContext();
+    context.ScanAllAssemblies();
+    context.Refresh();
+    options.Parent = context;
+});
+// or
+//var factory = new SpringServiceProviderFactory(ContextRegistry.GetContext());
+// or
+//var factory = new SpringServiceProviderFactory(new XmlApplicationContext("objects.xml"));
+// ...
 ```
 
 building ApplicationContext from ServiceCollection
@@ -54,19 +70,12 @@ building ApplicationContext from ServiceCollection
 using Microsoft.Extensions.DependencyInjection;
 using Spring.Context.Support;
 using Spring.Extensions.DependencyInjection;
-...
-    public static void Main()
-    {
-        var factory = new SpringServiceProviderFactory();
-        var services = new ServiceCollection();
-        ConfigureServices(services);
-        var context = factory.CreateBuilder(services);
-    }
-    private static void ConfigureServices(ServiceCollection services)
-    {
-        ...
-    }
-...
+// ...
+var factory = new SpringServiceProviderFactory();
+var services = new ServiceCollection();
+ConfigureServices(services);
+var context = factory.CreateBuilder(services);
+// ...
 ```
 
 building ServiceProvider from Spring.NET ApplicationContext
@@ -75,21 +84,16 @@ building ServiceProvider from Spring.NET ApplicationContext
 using Microsoft.Extensions.DependencyInjection;
 using Spring.Context.Support;
 using Spring.Extensions.DependencyInjection;
-...
-    public static void Main()
-    {
-        var factory = new SpringServiceProviderFactory();
-        var services = new ServiceCollection();
-        ConfigureServices(services);
-        var context = factory.CreateBuilder(services);
-        var provider = factory.CreateServiceProvider(context);
-        // or directly building serviceProvider from exists ApplicationContext without integrate ServiceCollection
-        //var provider = factory.CreateServiceProvider(ContextRegistry.GetContext());
-    }
-...
+// ...
+var factory = new SpringServiceProviderFactory();
+var services = new ServiceCollection();
+ConfigureServices(services);
+var context = factory.CreateBuilder(services);
+var provider = factory.CreateServiceProvider(context);
+// or directly building serviceProvider from exists ApplicationContext without integrate ServiceCollection
+//var provider = factory.CreateServiceProvider(ContextRegistry.GetContext());
+// ...
 ```
-
-finally, you can integrate `Spring.NET` application with `Microsoft.Extensions.DependencyInjection`.
 
 ## Known issues
 
