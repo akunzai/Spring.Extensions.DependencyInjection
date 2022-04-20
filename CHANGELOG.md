@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 3.1.0 (2022-04-20)
+
+- [Use the ASP.NET Core shared framework](https://docs.microsoft.com/aspnet/core/fundamentals/target-aspnetcore#use-the-aspnet-core-shared-framework)
+
 ## 3.0.0 (2021-08-03)
 
 - Bump Spring.Core from 2.0.1 to 3.0.0
