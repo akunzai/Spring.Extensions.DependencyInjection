@@ -17,12 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NodaTime" Version="3.1.0" />
-    <PackageReference Include="NodaTime.Testing" Version="3.1.0" />
+    <PackageReference Include="NodaTime" Version="3.1.0"/>
+    <PackageReference Include="NodaTime.Testing" Version="3.1.0"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Spring.Extensions.DependencyInjection\Spring.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\Spring.Extensions.DependencyInjection\Spring.Extensions.DependencyInjection.csproj"/>
   </ItemGroup>
 
 </Project>
