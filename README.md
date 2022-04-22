@@ -15,10 +15,6 @@ Integrate [Spring.NET](https://github.com/spring-projects/spring-net) with [Micr
 ## Installation
 
 ```shell
-# Package Manager
-Install-Package Spring.Extensions.DependencyInjection
-
-# .NET CLI
 dotnet add package Spring.Extensions.DependencyInjection
 ```
 
