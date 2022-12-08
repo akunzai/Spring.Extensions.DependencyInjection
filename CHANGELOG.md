@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 3.1.1 (2022-12-08)
+
+- Bump Spring.Core from 3.0.0 to 3.0.1
+- [The `System.Drawing.Common` before 4.7.2 is vulnerable](https://github.com/advisories/GHSA-rxg9-xrhp-64gj)
+
 ## 3.1.0 (2022-04-20)
 
 - [Use the ASP.NET Core shared framework](https://docs.microsoft.com/aspnet/core/fundamentals/target-aspnetcore#use-the-aspnet-core-shared-framework)
