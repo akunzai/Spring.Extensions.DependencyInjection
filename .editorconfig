@@ -165,3 +165,6 @@ csharp_space_between_method_declaration_name_and_open_parenthesis = false
 csharp_space_between_method_declaration_parameter_list_parentheses = false
 csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
+
+# Namespace declaration preferences
+csharp_style_namespace_declarations=file_scoped:suggestion
