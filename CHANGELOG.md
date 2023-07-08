@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 3.1.2 (2023-07-08)
+
+- Bump Spring.Core from 3.0.1 to 3.0.2
+
 ## 3.1.1 (2022-12-08)
 
 - Bump Spring.Core from 3.0.0 to 3.0.1
