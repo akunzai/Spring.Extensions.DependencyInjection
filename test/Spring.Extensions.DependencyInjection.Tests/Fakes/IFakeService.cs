@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Spring.Extensions.DependencyInjection.Tests.Fakes
+namespace Spring.Extensions.DependencyInjection.Tests.Fakes;
+
+public interface IFakeService
 {
-    public interface IFakeService
-    {
-    }
 }

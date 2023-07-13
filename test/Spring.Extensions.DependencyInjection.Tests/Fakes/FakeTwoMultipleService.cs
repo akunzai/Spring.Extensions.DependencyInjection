@@ -1,6 +1,5 @@
-﻿namespace Spring.Extensions.DependencyInjection.Tests.Fakes
+﻿namespace Spring.Extensions.DependencyInjection.Tests.Fakes;
+
+public class FakeTwoMultipleService : IFakeMultipleService
 {
-    public class FakeTwoMultipleService : IFakeMultipleService
-    {
-    }
 }

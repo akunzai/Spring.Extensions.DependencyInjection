@@ -1,7 +1,6 @@
-﻿namespace Spring.Extensions.DependencyInjection.Tests.Fakes
+﻿namespace Spring.Extensions.DependencyInjection.Tests.Fakes;
+
+public class ScopedFactoryService
 {
-    public class ScopedFactoryService
-    {
-        public IFakeService FakeService { get; set; }
-    }
+    public IFakeService FakeService { get; set; }
 }
