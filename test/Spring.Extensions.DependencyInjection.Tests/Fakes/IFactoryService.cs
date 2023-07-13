@@ -1,9 +1,8 @@
-﻿namespace Spring.Extensions.DependencyInjection.Tests.Fakes
-{
-    public interface IFactoryService
-    {
-        IFakeService FakeService { get; }
+﻿namespace Spring.Extensions.DependencyInjection.Tests.Fakes;
 
-        int Value { get; }
-    }
+public interface IFactoryService
+{
+    IFakeService FakeService { get; }
+
+    int Value { get; }
 }

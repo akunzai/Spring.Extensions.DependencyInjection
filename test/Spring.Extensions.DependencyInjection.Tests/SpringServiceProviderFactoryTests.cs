@@ -5,115 +5,114 @@ using Spring.Context.Support;
 using Spring.Extensions.DependencyInjection.Internal;
 using Xunit;
 
-namespace Spring.Extensions.DependencyInjection.Tests
+namespace Spring.Extensions.DependencyInjection.Tests;
+
+public class SpringServiceProviderFactoryTests
 {
-    public class SpringServiceProviderFactoryTests
+    [Fact]
+    public void CreateBuilderReturnsNewInstance()
     {
-        [Fact]
-        public void CreateBuilderReturnsNewInstance()
-        {
-            // Arrange
-            var factory = new SpringServiceProviderFactory();
+        // Arrange
+        var factory = new SpringServiceProviderFactory();
 
-            // Act
-            var builder = factory.CreateBuilder(new TestServiceCollection());
+        // Act
+        var builder = factory.CreateBuilder(new TestServiceCollection());
 
-            // Assert
-            Assert.NotNull(builder);
-            Assert.IsAssignableFrom<IApplicationContext>(builder);
-        }
+        // Assert
+        Assert.NotNull(builder);
+        Assert.IsAssignableFrom<IApplicationContext>(builder);
+    }
 
-        [Fact]
-        public void CreateBuilderWithParentContextWhenProvided()
-        {
-            // Arrange
-            var parent = new CodeConfigApplicationContext();
-            parent.ScanAllAssemblies();
-            parent.Refresh();
-            var factory = new SpringServiceProviderFactory(parent);
+    [Fact]
+    public void CreateBuilderWithParentContextWhenProvided()
+    {
+        // Arrange
+        var parent = new CodeConfigApplicationContext();
+        parent.ScanAllAssemblies();
+        parent.Refresh();
+        var factory = new SpringServiceProviderFactory(parent);
 
-            // Act
-            var builder = factory.CreateBuilder(new TestServiceCollection());
+        // Act
+        var builder = factory.CreateBuilder(new TestServiceCollection());
 
-            // Assert
-            Assert.Same(parent, builder.ParentContext);
-        }
+        // Assert
+        Assert.Same(parent, builder.ParentContext);
+    }
 
-        [Fact]
-        public void CreateServiceProviderReturnsNewInstance()
-        {
-            // Arrange
-            var factory = new SpringServiceProviderFactory();
-            var builder = factory.CreateBuilder(new TestServiceCollection());
+    [Fact]
+    public void CreateServiceProviderReturnsNewInstance()
+    {
+        // Arrange
+        var factory = new SpringServiceProviderFactory();
+        var builder = factory.CreateBuilder(new TestServiceCollection());
 
-            // Act
-            var provider = factory.CreateServiceProvider(builder);
+        // Act
+        var provider = factory.CreateServiceProvider(builder);
 
-            // Assert
-            Assert.NotNull(provider);
-            Assert.IsAssignableFrom<IServiceProvider>(provider);
-        }
+        // Assert
+        Assert.NotNull(provider);
+        Assert.IsAssignableFrom<IServiceProvider>(provider);
+    }
 
-        [Fact]
-        public void CreateServiceProviderContainsApplicationContext()
-        {
-            // Arrange
-            var factory = new SpringServiceProviderFactory();
-            var builder = factory.CreateBuilder(new TestServiceCollection());
-            var provider = factory.CreateServiceProvider(builder);
+    [Fact]
+    public void CreateServiceProviderContainsApplicationContext()
+    {
+        // Arrange
+        var factory = new SpringServiceProviderFactory();
+        var builder = factory.CreateBuilder(new TestServiceCollection());
+        var provider = factory.CreateServiceProvider(builder);
 
-            // Act
-            var applicationContext = provider.GetService<IApplicationContext>();
+        // Act
+        var applicationContext = provider.GetService<IApplicationContext>();
 
-            // Assert
-            Assert.NotNull(applicationContext);
-        }
+        // Assert
+        Assert.NotNull(applicationContext);
+    }
 
-        [Fact]
-        public void CreateServiceProviderContainsServiceProviderFactory()
-        {
-            // Arrange
-            var factory = new SpringServiceProviderFactory();
-            var builder = factory.CreateBuilder(new TestServiceCollection());
-            var provider = factory.CreateServiceProvider(builder);
+    [Fact]
+    public void CreateServiceProviderContainsServiceProviderFactory()
+    {
+        // Arrange
+        var factory = new SpringServiceProviderFactory();
+        var builder = factory.CreateBuilder(new TestServiceCollection());
+        var provider = factory.CreateServiceProvider(builder);
 
-            // Act
-            var serviceProviderFactory = provider.GetService<IServiceProviderFactory<IApplicationContext>>();
+        // Act
+        var serviceProviderFactory = provider.GetService<IServiceProviderFactory<IApplicationContext>>();
 
-            // Assert
-            Assert.NotNull(serviceProviderFactory);
-            Assert.Same(factory, serviceProviderFactory);
-        }
+        // Assert
+        Assert.NotNull(serviceProviderFactory);
+        Assert.Same(factory, serviceProviderFactory);
+    }
 
-        [Fact]
-        public void CreateServiceProviderContainsSelf()
-        {
-            // Arrange
-            var factory = new SpringServiceProviderFactory();
-            var builder = factory.CreateBuilder(new TestServiceCollection());
-            var provider = factory.CreateServiceProvider(builder);
+    [Fact]
+    public void CreateServiceProviderContainsSelf()
+    {
+        // Arrange
+        var factory = new SpringServiceProviderFactory();
+        var builder = factory.CreateBuilder(new TestServiceCollection());
+        var provider = factory.CreateServiceProvider(builder);
 
-            // Act
-            var serviceProvider = provider.GetService<IServiceProvider>();
+        // Act
+        var serviceProvider = provider.GetService<IServiceProvider>();
 
-            // Assert
-            Assert.NotNull(serviceProvider);
-            Assert.Same(provider, serviceProvider);
-        }
+        // Assert
+        Assert.NotNull(serviceProvider);
+        Assert.Same(provider, serviceProvider);
+    }
 
-        [Fact]
-        public void CreateServiceProviderWithContextContainsServiceScopeFactory()
-        {
-            // Arrange
-            var factory = new SpringServiceProviderFactory();
-            var provider = factory.CreateServiceProvider(new GenericApplicationContext());
+    [Fact]
+    public void CreateServiceProviderWithContextContainsServiceScopeFactory()
+    {
+        // Arrange
+        var factory = new SpringServiceProviderFactory();
+        var provider = factory.CreateServiceProvider(new GenericApplicationContext());
 
-            // Act
-            var serviceScopeFactory = provider.GetService<IServiceScopeFactory>();
+        // Act
+        var serviceScopeFactory = provider.GetService<IServiceScopeFactory>();
 
-            // Assert
-            Assert.NotNull(serviceScopeFactory);
-            Assert.IsAssignableFrom<IServiceScopeFactory>(serviceScopeFactory);
-        }
+        // Assert
+        Assert.NotNull(serviceScopeFactory);
+        Assert.IsAssignableFrom<IServiceScopeFactory>(serviceScopeFactory);
     }
 }

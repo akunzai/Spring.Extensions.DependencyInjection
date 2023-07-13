@@ -1,7 +1,6 @@
-﻿namespace Spring.Extensions.DependencyInjection.Tests.Fakes
+﻿namespace Spring.Extensions.DependencyInjection.Tests.Fakes;
+
+public interface IFakeOpenGenericService<TValue>
 {
-    public interface IFakeOpenGenericService<TValue>
-    {
-        TValue Value { get; }
-    }
+    TValue Value { get; }
 }

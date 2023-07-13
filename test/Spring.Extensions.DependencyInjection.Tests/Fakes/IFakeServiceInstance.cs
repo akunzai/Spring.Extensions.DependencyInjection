@@ -1,6 +1,5 @@
-﻿namespace Spring.Extensions.DependencyInjection.Tests.Fakes
+﻿namespace Spring.Extensions.DependencyInjection.Tests.Fakes;
+
+public interface IFakeServiceInstance : IFakeService
 {
-    public interface IFakeServiceInstance : IFakeService
-    {
-    }
 }
