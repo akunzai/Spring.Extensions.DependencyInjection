@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) AND '$(OS)' != 'Windows_NT' ">
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.7.2"/>
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.8.0"/>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All"/>
   </ItemGroup>
 
